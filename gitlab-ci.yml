@@ -1,0 +1,32 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  ENV: "prod"
+  DOCKER_PASSWORD: "hardcoded_password"   # ❌ A1: Insecure secret management
+  SCRIPT_URL: "http://insecure.example.com/install.sh"  # ❌ A8: Dependency manipulation
+
+build:
+  stage: build
+  script:
+    - echo "Building..."
+    - curl $SCRIPT_URL | bash   # ❌ A8
+
+test:
+  stage: test
+  script:
+    - echo "Running tests..."
+    - npm install                # ❌ A8: No lockfile or hash verification
+    - npm test
+
+deploy:
+  stage: deploy
+  only:
+    - main
+  script:
+    - echo $DOCKER_PASSWORD | docker login -u user --password-stdin  # ❌ A1
+    - docker build -t app:$CI_COMMIT_SHA .
+    - docker push app:$CI_COMMIT_SHA
+    - ./deploy.sh                # ❌ A7: Lack of integrity check

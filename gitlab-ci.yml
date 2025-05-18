@@ -12,6 +12,8 @@ build:
   stage: build
   script:
     - echo "Building..."
+    - coverege
+    - nyc
     - curl $SCRIPT_URL | bash   # ❌ A8
 
 test:
